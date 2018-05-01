@@ -2,7 +2,7 @@ from flask import Flask, render_template, send_from_directory
 from flask.ext.wtf import Form
 from wtforms import SelectField, DecimalField, BooleanField, SubmitField
 from wtforms.validators import DataRequired
-from pwgen import makePasswordList, doLetterSubs
+from pwgen import makePasswordList, doLetterSubs, specialPasswordList
 from flask_bootstrap import Bootstrap
 
 
@@ -31,7 +31,11 @@ def index():
         maxLength = int(form.maxLength.data)
         maxPwLen = form.maxPwLen.data
         alt = form.alternate.data
-        pwlist = makePasswordList(minLength, maxLength, maxPwLen, alt)
+        adverbs = form.adverbs.data
+        if adverbs:
+            pwlist=specialPasswordList(minLength,maxLength,maxPwLen,alt)
+        else:
+            pwlist = makePasswordList(minLength, maxLength, maxPwLen, alt)
         if form.lettersubs.data:
             doLetterSubs(pwlist)
         return render_template('pwlist.html', pwlist=pwlist)

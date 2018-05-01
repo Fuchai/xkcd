@@ -3,15 +3,16 @@ import random
 wordFile = open("noun.txt",'r')
 wordlist = wordFile.readlines()
 
-specialwordfilenames=["adj.txt", "noun.txt", "verb.txt", "adverb.txt"]
+specialwordfilenames=["adj.txt", "noun.txt", "verb.txt", "adverbs.txt"]
 speicalwordslists=[open(wordFile,"r").readlines() for wordFile in specialwordfilenames]
 
-def makeSpecialPassword(goodwords,maxLen):
+def makeSpecialPassword(goodwordslists,maxLen):
     done = False
     while not done:
         passlist = []
+        mina=min(len(list) for list in goodwordslists)
         for i in range(4):
-            passlist.append(goodwords[random.randrange(len(goodwords))])
+            passlist.append(goodwordslists[i][random.randrange(mina)])
         wlen = len("".join(passlist))
         if wlen <= maxLen and wlen > 10:
             done = True
@@ -19,12 +20,11 @@ def makeSpecialPassword(goodwords,maxLen):
     return passlist
 
 def specialPasswordList(minLen,maxLen,maxPw,alt):
-    goodwords = [word[:-1] for word in wordlist
-                     if wordFilter(word,minLen,maxLen,alt)]
+    goodwordslists=[[word[:-1] for word in wordlist if wordFilter(word,minLen,maxLen,alt)] for wordlist in speicalwordslists]
 
     wlist = []
     for i in range(10):
-        wlist.append(makePassword(goodwords,maxPw))
+        wlist.append(makeSpecialPassword(goodwordslists,maxPw))
     return wlist
 
 def altscore(word):
@@ -89,3 +89,4 @@ def doLetterSubs(pwlist):
 
 if __name__ == '__main__':
     print(makePasswordList(4,7,25,True))
+    print(specialPasswordList(5,10,100,False))
